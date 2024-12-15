@@ -1,0 +1,72 @@
+<?xml version="1.0" ?>
+<sdf version="1.5">
+  <model name="obstacle_09">
+    <static>true</static>
+    
+    <!-- Main Link (Obstacle) -->
+    <link name="link">
+      <pose>0 0 0 0 0 0</pose>
+      <collision name="collision">
+        <geometry>
+            <mesh>
+              <uri>
+                model://obstacle_09/mesh/ostacolo_09.stl
+              </uri>
+              <scale>
+                0.001 0.001 0.001
+              </scale>
+            </mesh>
+        </geometry>
+      </collision>
+      <visual name="visual">
+        <cast_shadows>true</cast_shadows>
+        <geometry>
+            <mesh>
+              <uri>
+                model://obstacle_09/mesh/ostacolo_09.stl
+              </uri>
+              <scale>
+                0.001 0.001 0.001
+              </scale>
+            </mesh>
+        </geometry>
+        <material> <!-- Color yellow -->
+          <ambient>0.9098 0.9020 0.2941 1</ambient>
+          <diffuse>0.9098 0.9020 0.2941 1</diffuse>
+          <specular>0 0 0 0</specular>
+          <emissive>0 0 0 1</emissive>
+        </material> 
+      </visual>
+    </link>
+
+    <!-- ArUco Marker as a Separate Link -->
+    <link name="arucotag_link">
+      <pose>-0.005 0.75 0.20 0 0 1.57</pose> <!-- Position relative to the obstacle's link -->
+      
+      <visual name="arucotag_visual">
+        <geometry>
+          <box>
+            <size>0.2 0.005 0.2</size>
+          </box>
+        </geometry>
+        <material>
+          <diffuse>1 1 1 1</diffuse>
+          <specular>0.4 0.4 0.4 1</specular>
+          <pbr>
+            <metal>
+              <albedo_map>model://arucotag/arucotag-115.png</albedo_map>
+            </metal>
+          </pbr>
+        </material>
+      </visual>
+    </link>
+
+    <!-- Optionally, you could add a joint to attach the ArUco marker to the main obstacle -->
+    <joint name="arucotag_joint" type="fixed">
+      <parent>link</parent>
+      <child>arucotag_link</child>
+      <pose>0 0 0 0 0 0</pose> <!-- This makes the ArUco marker part of the obstacle -->
+    </joint>
+
+  </model>
+</sdf>
