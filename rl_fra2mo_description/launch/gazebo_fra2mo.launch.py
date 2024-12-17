@@ -138,15 +138,18 @@ def generate_launch_description():
                    '/model/fra2mo/odometry@nav_msgs/msg/Odometry@ignition.msgs.Odometry',
                    '/model/fra2mo/tf@tf2_msgs/msg/TFMessage@ignition.msgs.Pose_V',
                    '/lidar@sensor_msgs/msg/LaserScan[ignition.msgs.LaserScan',
-                   '/clock@rosgraph_msgs/msg/Clock[ignition.msgs.Clock'],
-                   #'/lidar/points@sensor_msgs/msg/PointCloud2[ignition.msgs.PointCloudPacked'], 
+                   '/clock@rosgraph_msgs/msg/Clock[ignition.msgs.Clock',
+                   '/camera_info@sensor_msgs/msg/CameraInfo@gz.msgs.CameraInfo',],
+                   #'/lidar/points@sensor_msgs/msg/PointCloud2[ignition.msgs.PointCloudPacked']
+        remappings=[('/camera_info', '/stereo/left/camera_info')], # Remap Gazebo topic /camera_info
         output='screen'
     )
 
     start_gazebo_ros_image_bridge_cmd = Node(
         package='ros_gz_image',
         executable='image_bridge',
-        arguments=['/camera/image_raw'],
+        arguments=['/camera'],
+        remappings=[('/camera', '/stereo/left/image_rect_color')], # Remap Gazebo topic /camera
         output='screen',
     )
 
