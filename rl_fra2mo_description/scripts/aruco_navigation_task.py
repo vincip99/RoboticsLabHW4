@@ -4,7 +4,7 @@ import rclpy
 from rclpy.node import Node
 from geometry_msgs.msg import PoseStamped, TransformStamped
 from nav2_simple_commander.robot_navigator import BasicNavigator
-from tf2_ros import TransformBroadcaster
+from tf2_ros import TransformBroadcaster, Buffer, TransformListener, LookupException, ExtrapolationException
 from tf_transformations import euler_from_quaternion, quaternion_from_euler
 import math
 
@@ -19,6 +19,11 @@ class ArucoNavigator(Node):
 
         # TF broadcaster for publishing Aruco pose
         self.tf_broadcaster = TransformBroadcaster(self)
+
+        # TF2 buffer and listener for transformations
+        self.tf_buffer = Buffer()
+        self.tf_listener = TransformListener(self.tf_buffer, self)
+
 
         # Aruco pose subscriber
         self.create_subscription(
@@ -75,8 +80,35 @@ class ArucoNavigator(Node):
         self.get_logger().info("Aruco marker detected!")
         self.aruco_pose = msg
 
+        # Extract the position and orientation from the Aruco marker pose
+        position = (msg.pose.position.x, msg.pose.position.y, msg.pose.position.z)
+        orientation_quat = (
+            msg.pose.orientation.x,
+            msg.pose.orientation.y,
+            msg.pose.orientation.z,
+            msg.pose.orientation.w
+        )
+
+        # Convert quaternion to roll, pitch, yaw
+        roll, pitch, yaw = euler_from_quaternion(orientation_quat)
+        orientation = (roll, pitch, yaw)
+
+        transformed_pose = self.transform_to_map_frame(position, orientation)
+
+        # Print the transformed pose in the map frame
+        self.get_logger().info(
+            f"Aruco marker pose in map frame: \n"
+            f"Position: x = {transformed_pose.pose.position.x:.3f}, "
+            f"y = {transformed_pose.pose.position.y:.3f}, "
+            f"z = {transformed_pose.pose.position.z:.3f}\n"
+            f"Orientation: x = {transformed_pose.pose.orientation.x:.3f}, "
+            f"y = {transformed_pose.pose.orientation.y:.3f}, "
+            f"z = {transformed_pose.pose.orientation.z:.3f}, "
+            f"w = {transformed_pose.pose.orientation.w:.3f}"
+        )
+
         # Publish the Aruco pose as a TF transform
-        self.publish_aruco_tf(msg)
+        self.publish_aruco_tf(transformed_pose)
 
     def publish_aruco_tf(self, pose_msg):
         """ Broadcast Aruco pose as a TF transform. """
@@ -88,7 +120,10 @@ class ArucoNavigator(Node):
         t.transform.translation.x = pose_msg.pose.position.x
         t.transform.translation.y = pose_msg.pose.position.y
         t.transform.translation.z = pose_msg.pose.position.z
-        t.transform.rotation = pose_msg.pose.orientation
+        t.transform.rotation.x = pose_msg.pose.orientation.x
+        t.transform.rotation.y = pose_msg.pose.orientation.y
+        t.transform.rotation.z = pose_msg.pose.orientation.z
+        t.transform.rotation.w = pose_msg.pose.orientation.w
 
         self.tf_broadcaster.sendTransform(t)
 

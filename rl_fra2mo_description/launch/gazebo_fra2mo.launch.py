@@ -40,7 +40,7 @@ def generate_launch_description():
     declared_arguments.append(
         DeclareLaunchArgument(
             "rviz_config_name",
-            default_value="explore.rviz",
+            default_value="aruco_nav.rviz",
             description="Name of the RViz config file to load."
         )
     )
