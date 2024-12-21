@@ -3,6 +3,7 @@ from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
 from launch_ros.substitutions import FindPackageShare
+from launch.conditions import IfCondition
 
 
 def generate_launch_description():
@@ -15,6 +16,7 @@ def generate_launch_description():
 
     params_file = LaunchConfiguration('params_file')
     use_sim_time = LaunchConfiguration('use_sim_time')
+    use_explore = LaunchConfiguration('use_explore')
 
     declare_params_file_cmd = DeclareLaunchArgument(
         'params_file',
@@ -24,6 +26,11 @@ def generate_launch_description():
 
     declare_use_sim_time_cmd = DeclareLaunchArgument(
         'use_sim_time', default_value='true', description='Use simulation (Gazebo) clock if true'
+    )
+    declare_use_explore_cmd = DeclareLaunchArgument(
+        'use_explore',
+        default_value='false',
+        description='Launch the explore_lite node if true',
     )
 
     slam_launch = IncludeLaunchDescription(
@@ -45,6 +52,7 @@ def generate_launch_description():
 
     explore_lite_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource([explore_lite_launch]),
+        condition=IfCondition(use_explore),
         launch_arguments={
             'use_sim_time': use_sim_time,
         }.items(),
@@ -54,8 +62,9 @@ def generate_launch_description():
         [
             declare_params_file_cmd,
             declare_use_sim_time_cmd,
+            declare_use_explore_cmd,
             slam_launch,
             nav2_bringup_launch,
-            #explore_lite_launch,
+            explore_lite_launch,
         ]
     )

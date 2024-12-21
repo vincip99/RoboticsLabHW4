@@ -20,7 +20,7 @@ find_package(tf2_ros REQUIRED)
 find_package(tf2_geometry_msgs REQUIRED)
 
 add_executable(dynamic_tf_publisher src/odom_bl_tf.cpp)
-ament_target_dependencies(dynamic_tf_publisher rclcpp nav_msgs geometry_msgs tf2 tf2_ros)
+ament_target_dependencies(dynamic_tf_publisher rclcpp nav_msgs geometry_msgs tf2 tf2_ros tf2_geometry_msgs)
 
 add_executable(aruco_pose_tf src/aruco_pose_tf.cpp)
 ament_target_dependencies(aruco_pose_tf rclcpp nav_msgs geometry_msgs tf2 tf2_ros tf2_geometry_msgs)

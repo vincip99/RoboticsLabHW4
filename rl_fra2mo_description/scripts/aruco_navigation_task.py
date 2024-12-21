@@ -2,9 +2,8 @@
 
 import rclpy
 from rclpy.node import Node
-from geometry_msgs.msg import PoseStamped, TransformStamped
+from geometry_msgs.msg import PoseStamped
 from nav2_simple_commander.robot_navigator import BasicNavigator
-from tf2_ros import TransformBroadcaster, Buffer, TransformListener, LookupException, ExtrapolationException
 from tf_transformations import euler_from_quaternion, quaternion_from_euler
 import math
 
@@ -16,14 +15,6 @@ class ArucoNavigator(Node):
         # Initialize the navigator
         self.navigator = BasicNavigator()
         self.aruco_pose = None
-
-        # TF broadcaster for publishing Aruco pose
-        self.tf_broadcaster = TransformBroadcaster(self)
-
-        # TF2 buffer and listener for transformations
-        self.tf_buffer = Buffer()
-        self.tf_listener = TransformListener(self.tf_buffer, self)
-
 
         # Aruco pose subscriber
         self.create_subscription(
@@ -107,26 +98,6 @@ class ArucoNavigator(Node):
             f"w = {transformed_pose.pose.orientation.w:.3f}"
         )
 
-        # Publish the Aruco pose as a TF transform
-        self.publish_aruco_tf(transformed_pose)
-
-    def publish_aruco_tf(self, pose_msg):
-        """ Broadcast Aruco pose as a TF transform. """
-        t = TransformStamped()
-        t.header.stamp = self.get_clock().now().to_msg()
-        t.header.frame_id = "map"
-        t.child_frame_id = "aruco_marker"
-
-        t.transform.translation.x = pose_msg.pose.position.x
-        t.transform.translation.y = pose_msg.pose.position.y
-        t.transform.translation.z = pose_msg.pose.position.z
-        t.transform.rotation.x = pose_msg.pose.orientation.x
-        t.transform.rotation.y = pose_msg.pose.orientation.y
-        t.transform.rotation.z = pose_msg.pose.orientation.z
-        t.transform.rotation.w = pose_msg.pose.orientation.w
-
-        self.tf_broadcaster.sendTransform(t)
-
     def navigate_to_position(self, pose_stamped):
         """ Send a navigation goal and wait for completion. """
         self.navigator.goToPose(pose_stamped)
@@ -142,7 +113,7 @@ class ArucoNavigator(Node):
 
         # Define start and goal positions in the world frame
         start_position_world = (-3.0, 3.5, 0.1)
-        start_orientation_world = (0.0, 0.0, 1.57)  # Yaw = 90 degrees
+        start_orientation_world = (0.0, 0.0, -1.57)  # Yaw = 90 degrees
 
         final_position_world = (-3.87, -4.02, 0.1)
         final_orientation_world = (0.0, 0.0, 1.54)  # Yaw slightly different
@@ -161,7 +132,7 @@ class ArucoNavigator(Node):
             rclpy.spin_once(self, timeout_sec=0.5)
 
         # Log Aruco pose in the map frame
-        self.get_logger().info("Aruco marker detected and TF broadcasted.")
+        self.get_logger().info("Aruco marker detected")
 
         # Return to start position
         self.get_logger().info("Returning to start position...")
