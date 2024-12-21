@@ -163,6 +163,9 @@ private:
         pose_in_world.pose.position.x = x_offset + (x_map * cos(yaw_map) - y_map * sin(yaw_map));
         pose_in_world.pose.position.y = y_offset + (x_map * sin(yaw_map) + y_map * cos(yaw_map));
 
+        // Keep the z value the same as in the map frame
+        pose_in_world.pose.position.z = pose_in_map.pose.position.z;
+
         // Orientation: No change in orientation since it's the same for both frames
         pose_in_world.pose.orientation = pose_in_map.pose.orientation;
     }

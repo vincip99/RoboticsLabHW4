@@ -5,6 +5,8 @@ from launch.actions import IncludeLaunchDescription, DeclareLaunchArgument
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
 from launch_ros.substitutions import FindPackageShare
+from launch.conditions import IfCondition
+from launch_ros.actions import Node
 
 def generate_launch_description():
 
@@ -14,6 +16,22 @@ def generate_launch_description():
 
     # Use simulation time argument
     use_sim_time = LaunchConfiguration('use_sim_time')
+
+    declare_use_sim_time = DeclareLaunchArgument(
+        'use_sim_time',
+        default_value='true',
+        description='Use simulation time if true'
+    )
+
+    # Use aruco navigation scripts
+    aruco_navigation = LaunchConfiguration('aruco_navigation')
+
+    declare_aruco_navigation = DeclareLaunchArgument(
+        'aruco_navigation',
+        default_value = 'true',
+        description='activate or not aruco navigation task script'
+    )
+
 
     # Include gazebo_fra2mo.launch file
     gazebo_launch = IncludeLaunchDescription(
@@ -43,14 +61,20 @@ def generate_launch_description():
         }.items()
     )
 
+    # launch aruco navigation commander node
+    aruco_navigation_node = Node(
+        package = 'rl_fra2mo_description',
+        executable = 'aruco_navigation_task.py',
+        condition = IfCondition(aruco_navigation)
+    )
+
+
     # Return the complete LaunchDescription
     return LaunchDescription([
-        DeclareLaunchArgument(
-            'use_sim_time',
-            default_value='false',
-            description='Use simulation time if true'
-        ),
+        declare_use_sim_time,
+        declare_aruco_navigation,
         gazebo_launch,
         explore_launch,
-        aruco_ros_node
+        aruco_ros_node,
+        aruco_navigation_node
     ])
