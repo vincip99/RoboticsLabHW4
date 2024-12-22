@@ -3,6 +3,8 @@
 #include <nav_msgs/msg/odometry.hpp>
 #include <tf2/LinearMath/Quaternion.h>
 #include <tf2_ros/transform_broadcaster.h>
+#include <tf2_ros/transform_listener.h>
+#include <tf2_ros/buffer.h>  // Add this header for tf2::Buffer
 #include <cmath> 
 
 class DynamicTfPublisher : public rclcpp::Node {
@@ -11,9 +13,13 @@ public:
         // Inizializzazione del TF Broadcaster
         tf_broadcaster_ = std::make_shared<tf2_ros::TransformBroadcaster>(this);
 
+        // Create a buffer and listener to manage transforms
+        tf_buffer_ = std::make_shared<tf2_ros::Buffer>(this->get_clock());
+        tf_listener_ = std::make_shared<tf2_ros::TransformListener>(*tf_buffer_);
+
         // Sottoscrizione al topic di odometria
         odom_sub_ = this->create_subscription<nav_msgs::msg::Odometry>(
-            "/model/fra2mo/odometry", 10,
+            "/model/fra2mo/odometry", 100,
             std::bind(&DynamicTfPublisher::odomCallback, this, std::placeholders::_1));
 
         RCLCPP_INFO(this->get_logger(), "Dynamic TF publisher initialized.");
@@ -57,6 +63,10 @@ private:
 
     // TF Broadcaster
     std::shared_ptr<tf2_ros::TransformBroadcaster> tf_broadcaster_;
+
+    // Buffer and listener for handling transforms
+    std::shared_ptr<tf2_ros::Buffer> tf_buffer_;
+    std::shared_ptr<tf2_ros::TransformListener> tf_listener_;
 
     // Sottoscrizione al topic di odometria
     rclcpp::Subscription<nav_msgs::msg::Odometry>::SharedPtr odom_sub_;

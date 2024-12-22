@@ -6,10 +6,11 @@ from launch_ros.substitutions import FindPackageShare
 
 
 def generate_launch_description():
+    # Launch configurations
     slam_params_file = LaunchConfiguration('slam_params_file')
     use_sim_time = LaunchConfiguration('use_sim_time')
-    
-    # SLAM params file
+
+    # Declare arguments
     slam_params_file_arg = DeclareLaunchArgument(
         'slam_params_file',
         default_value=PathJoinSubstitution(
@@ -19,15 +20,25 @@ def generate_launch_description():
     )
 
     use_sim_time_arg = DeclareLaunchArgument(
-        'use_sim_time', default_value='true', description='Use simulation/Gazebo clock'
+        'use_sim_time',
+        default_value='true',
+        description='Use simulation time (true for Gazebo or other simulation environments).'
     )
 
-    # Launch SLAM node
+    # SLAM node
     slam_node = Node(
         package='slam_toolbox',
         executable='async_slam_toolbox_node',
         name='slam',
-        parameters=[slam_params_file, {'use_sim_time': use_sim_time}],
+        parameters=[
+            slam_params_file,
+            {'use_sim_time': use_sim_time},
+        ],
     )
 
-    return LaunchDescription([use_sim_time_arg, slam_params_file_arg, slam_node])
+    # Combine all components into the launch description
+    return LaunchDescription([
+        use_sim_time_arg,         # Declare simulation time argument
+        slam_params_file_arg,     # Declare SLAM parameters file argument
+        slam_node                 # Start the SLAM node
+    ])

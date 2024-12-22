@@ -15,18 +15,28 @@ def generate_launch_description():
     )
 
     params_file = LaunchConfiguration('params_file')
+    slam_params_file = LaunchConfiguration('slam_params_file')
     use_sim_time = LaunchConfiguration('use_sim_time')
     use_explore = LaunchConfiguration('use_explore')
 
     declare_params_file_cmd = DeclareLaunchArgument(
         'params_file',
-        default_value=PathJoinSubstitution([fra2mo_dir, 'config', 'explore.yaml']),
+        default_value='explore.yaml',
+        description='Full path to the ROS2 parameters file to use for all launched nodes',
+    )
+
+    declare_slam_params_file_cmd = DeclareLaunchArgument(
+        'slam_params_file',
+        default_value='slam.yaml',
         description='Full path to the ROS2 parameters file to use for all launched nodes',
     )
 
     declare_use_sim_time_cmd = DeclareLaunchArgument(
-        'use_sim_time', default_value='true', description='Use simulation (Gazebo) clock if true'
+        'use_sim_time',
+        default_value='true',
+        description='Use simulation (Gazebo) clock if true'
     )
+
     declare_use_explore_cmd = DeclareLaunchArgument(
         'use_explore',
         default_value='false',
@@ -37,7 +47,10 @@ def generate_launch_description():
         PythonLaunchDescriptionSource(
             PathJoinSubstitution([fra2mo_dir, 'launch', 'fra2mo_slam.launch.py'])
         ),
-        launch_arguments={'use_sim_time': use_sim_time}.items(),
+        launch_arguments={
+            'use_sim_time': use_sim_time,
+            'slam_params_file': PathJoinSubstitution([fra2mo_dir, 'config', slam_params_file])
+        }.items(),
     )
 
     nav2_bringup_launch = IncludeLaunchDescription(
@@ -46,7 +59,7 @@ def generate_launch_description():
         ),
         launch_arguments={
             'use_sim_time': use_sim_time,
-            'params_file': params_file,
+            'params_file': PathJoinSubstitution([fra2mo_dir, 'config', params_file]),
         }.items(),
     )
 
@@ -62,6 +75,7 @@ def generate_launch_description():
         [
             declare_params_file_cmd,
             declare_use_sim_time_cmd,
+            declare_slam_params_file_cmd,
             declare_use_explore_cmd,
             slam_launch,
             nav2_bringup_launch,

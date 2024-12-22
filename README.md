@@ -16,7 +16,7 @@ source install/setup.bash
 ```
 
 ## :white_check_mark: Usage
-### Run a Nav2 Simple Commander to enable an autonomous navigation task:
+### Run a Nav2 Simple Commander to enable follow a set of waypoints:
 
 Launch the simulation with the command
 ```
@@ -33,7 +33,7 @@ Run
 ros2 run rl_fra2mo_description follow_waypoints.py
 ```
 
-### Run a Nav2 explorer to enable an autonomous navigation task:
+### Run a Nav2 explorer to enable an autonomous navigation task to explore the map:
 Launch the simulation with the command
 ```
 ros2 launch rl_fra2mo_description gazebo_fra2mo.launch.py rviz_config_name:=explore.rviz
@@ -44,7 +44,24 @@ launch the nav2 stack with the command
 ros2 launch rl_fra2mo_description fra2mo_explore.launch.py use_explore:=true
 ```
 
-### Run a Nav2 vision task to detect an aruco marker:
+launch the large areas configuration
+```
+ros2 launch rl_fra2mo_description fra2mo_explore.launch.py use_explore:=true params_file:=explore_larger_areas.yaml slam_params_file:=slam_larger_areas.yaml
+```
+launch the small areas configuration
+```
+ros2 launch rl_fra2mo_description fra2mo_explore.launch.py use_explore:=true params_file:=explore_smaller_areas.yaml slam_params_file:=slam_smaller_areas.yaml
+```
+launch the large areas configuration
+```
+ros2 launch rl_fra2mo_description fra2mo_explore.launch.py use_explore:=true params_file:=explore_dynamic.yaml slam_params_file:=slam_dynamic.yaml
+```
+launch the large areas configuration
+```
+ros2 launch rl_fra2mo_description fra2mo_explore.launch.py use_explore:=true params_file:=explore_aggressive.yaml slam_params_file:=slam_aggressive.yaml
+```
+
+### Run a Nav2 vision task to detect the aruco marker:
 Launch the simulation with the command
 ```
 ros2 launch rl_fra2mo_description vision_nav_fra2mo.launch.py

@@ -21,11 +21,16 @@ def generate_launch_description():
 
     # Genera la descrizione del robot usando xacro
     robot_description_xacro = {"robot_description": ParameterValue(Command(['xacro ', xacro]),value_type=str)}
-    
-    # use_sim_time_arg = DeclareLaunchArgument(
-    #     'use_sim_time', default_value='true', description='Use simulation/Gazebo clock')
 
     declared_arguments = []
+
+    declared_arguments.append(
+        DeclareLaunchArgument(
+            'use_sim_time', 
+            default_value='true',
+            description='Use simulation/Gazebo clock'
+        )
+    )
 
     # Declare launch argument for Gazebo world file
     declared_arguments.append(
@@ -97,7 +102,7 @@ def generate_launch_description():
         package='robot_state_publisher',
         executable='robot_state_publisher',
         parameters=[robot_description_xacro,
-                    {"use_sim_time": True}
+                    {"use_sim_time": use_sim_time}
             ]
     )
 
@@ -105,7 +110,7 @@ def generate_launch_description():
     joint_state_publisher_node = Node(
         package='joint_state_publisher',
         executable='joint_state_publisher',
-        parameters=[{"use_sim_time": True}]
+        parameters=[{"use_sim_time": use_sim_time}]
     )
     
     # Gazebo simulation launch description
@@ -157,7 +162,7 @@ def generate_launch_description():
         package='rl_fra2mo_description',
         executable='dynamic_tf_publisher',
         name='odom_tf',
-        parameters=[{"use_sim_time": True}]
+        parameters=[{"use_sim_time": use_sim_time}]
     )
 
     laser_id_link_tf = Node(package='tf2_ros',
@@ -165,7 +170,7 @@ def generate_launch_description():
                      name='lidar_staticTF',
                      output='log',
                      arguments=['0.0', '0.0', '0.0', '0.0', '0.0', '0.0', 'laser_frame', 'fra2mo/base_footprint/laser_frame'],
-                     parameters=[{"use_sim_time": True}]
+                     parameters=[{"use_sim_time": use_sim_time}]
     )
 
     robot_localization_node = Node(
@@ -196,7 +201,7 @@ def generate_launch_description():
         executable='rviz2',
         name='rviz2',
         arguments=['-d', rviz_config_file],
-        parameters=[{'use_sim_time': True}],
+        parameters=[{'use_sim_time': False}],
         output='screen'
     )
 
