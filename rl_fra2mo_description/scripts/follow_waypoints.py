@@ -137,7 +137,7 @@ def main():
 
     # Get the package share directory and load the YAML file
     package_share_directory = get_package_share_directory('rl_fra2mo_description')
-    yaml_file = os.path.join(package_share_directory, 'config', 'aruco_path.yaml')
+    yaml_file = os.path.join(package_share_directory, 'config', 'goal.yaml')
     waypoints = load_waypoints(yaml_file)
 
     def create_pose(transform):
