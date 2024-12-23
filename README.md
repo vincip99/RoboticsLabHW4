@@ -1,4 +1,4 @@
-# RoboticsLabHW3
+# RoboticsLabHW4
 Homework 4 for Robotics Lab 2024/2025
 
 ## :package: About
@@ -23,12 +23,12 @@ Launch the simulation with the command
 ros2 launch rl_fra2mo_description gazebo_fra2mo.launch.py rviz_config_name:=explore.rviz
 ```
 
-launch the nav2 stack with the command
+In another terminal launch the nav2 stack with the command
 ```
 ros2 launch rl_fra2mo_description fra2mo_explore.launch.py
 ```
 
-Run 
+Run in another terminal the commander script 
 ```
 ros2 run rl_fra2mo_description follow_waypoints.py
 ```
@@ -38,12 +38,7 @@ Launch the simulation with the command
 ```
 ros2 launch rl_fra2mo_description gazebo_fra2mo.launch.py rviz_config_name:=explore.rviz
 ```
-
-launch the nav2 stack with the command
-```
-ros2 launch rl_fra2mo_description fra2mo_explore.launch.py use_explore:=true
-```
-
+To launch the expolre setup:
 launch the large areas configuration
 ```
 ros2 launch rl_fra2mo_description fra2mo_explore.launch.py use_explore:=true params_file:=explore_larger_areas.yaml slam_params_file:=slam_larger_areas.yaml
