@@ -16,7 +16,7 @@ source install/setup.bash
 ```
 
 ## :white_check_mark: Usage
-### Run a Nav2 Simple Commander to enable follow a set of waypoints:
+### Run a Nav2 Simple Commander to follow a set of waypoints:
 
 Launch the simulation with the command
 ```
@@ -34,26 +34,44 @@ ros2 run rl_fra2mo_description follow_waypoints.py
 ```
 
 ### Run a Nav2 explorer to enable an autonomous navigation task to explore the map:
-Launch the simulation with the command
+
+#### Step 1: Start the Simulation Environment
+Run the following command to launch the simulation and RViz with the appropriate configuration file:
 ```
 ros2 launch rl_fra2mo_description gazebo_fra2mo.launch.py rviz_config_name:=explore.rviz
 ```
-To launch the expolre setup:
-launch the large areas configuration
+#### Step 2: Launch the Exploration Setup
+Choose from the following configurations based on your task requirements:
+
+
+#### 1. Large Areas Configuration
+For exploring large areas, use the following command:
 ```
 ros2 launch rl_fra2mo_description fra2mo_explore.launch.py use_explore:=true params_file:=explore_larger_areas.yaml slam_params_file:=slam_larger_areas.yaml
 ```
-launch the small areas configuration
+
+#### 2. Small Areas Configuration
+For exploring smaller, confined areas, use the following command:
 ```
 ros2 launch rl_fra2mo_description fra2mo_explore.launch.py use_explore:=true params_file:=explore_smaller_areas.yaml slam_params_file:=slam_smaller_areas.yaml
 ```
-launch the large areas configuration
+
+#### 3. Dynamic Areas Configuration
+For exploring dynamic environments where the map frequently changes, use:
 ```
 ros2 launch rl_fra2mo_description fra2mo_explore.launch.py use_explore:=true params_file:=explore_dynamic.yaml slam_params_file:=slam_dynamic.yaml
 ```
-launch the large areas configuration
+#### 4. Aggressive Exploration Configuration
+For fast and aggressive exploration of the environment, use the following command:
 ```
 ros2 launch rl_fra2mo_description fra2mo_explore.launch.py use_explore:=true params_file:=explore_aggressive.yaml slam_params_file:=slam_aggressive.yaml
+```
+
+#### Notes:
+```text
+- use_explore:=true: Ensures the exploration module is activated.
+- params_file and slam_params_file: Specify the respective parameter files for exploration and SLAM configurations tailored to the task.
+- Modify or extend these configurations based on your navigation and mapping requirements.
 ```
 
 ### Run a Nav2 vision task to detect the aruco marker:
