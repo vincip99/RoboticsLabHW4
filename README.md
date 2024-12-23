@@ -14,6 +14,10 @@ In each terminal you open, source the install directory:
 ```
 source install/setup.bash
 ```
+#### Notes:
+```text
+- remember to press the play button on gazebo
+```
 
 ## :white_check_mark: Usage
 ### :pushpin: Run a Nav2 Simple Commander to follow a set of waypoints:
