@@ -16,7 +16,7 @@ source install/setup.bash
 ```
 
 ## :white_check_mark: Usage
-### Run a Nav2 Simple Commander to follow a set of waypoints:
+### :pushpin: Run a Nav2 Simple Commander to follow a set of waypoints:
 
 Launch the simulation with the command
 ```
@@ -33,7 +33,7 @@ Run in another terminal the commander script
 ros2 run rl_fra2mo_description follow_waypoints.py
 ```
 
-### Run a Nav2 explorer to enable an autonomous navigation task to explore the map:
+### :globe_with_meridians: Run a Nav2 explorer to enable an autonomous navigation task to explore the map:
 
 #### Step 1: Start the Simulation Environment
 Run the following command to launch the simulation and RViz with the appropriate configuration file:
@@ -41,7 +41,7 @@ Run the following command to launch the simulation and RViz with the appropriate
 ros2 launch rl_fra2mo_description gazebo_fra2mo.launch.py rviz_config_name:=explore.rviz
 ```
 #### Step 2: Launch the Exploration Setup
-Choose from the following configurations based on your task requirements:
+Choose one from the following configurations based on your task requirements:
 
 
 #### 1. Large Areas Configuration
@@ -74,7 +74,7 @@ ros2 launch rl_fra2mo_description fra2mo_explore.launch.py use_explore:=true par
 - Modify or extend these configurations based on your navigation and mapping requirements.
 ```
 
-### Run a Nav2 vision task to detect the aruco marker:
+### :eyes: Run a Nav2 vision task to detect the aruco marker:
 Launch the simulation with the command
 ```
 ros2 launch rl_fra2mo_description vision_nav_fra2mo.launch.py
